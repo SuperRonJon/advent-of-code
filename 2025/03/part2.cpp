@@ -1,14 +1,16 @@
+#include <cstddef>
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <cstddef>
 
-unsigned long long get_joltage(const std::string &batteries, int joltage_digits) {
+
+uint64_t get_joltage(const std::string &batteries, uint32_t joltage_digits) {
     std::string joltage_string;
     std::size_t start_index{0};
     std::size_t num_digits_found{0};
 
-    for(int i = 0; i < joltage_digits; i++) {
+    for(uint32_t i = 0; i < joltage_digits; i++) {
         int current_largest = 0;
         std::size_t max_index = batteries.size() - (joltage_digits - 1 - num_digits_found);
         for(std::size_t j = start_index; j < max_index; j++) {
@@ -30,10 +32,9 @@ int main(int argc, char **argv) {
         std::string filename = argv[1];
         std::ifstream in_file{filename};
         std::string line;
-        unsigned long long joltage_sum = 0;
+        uint64_t joltage_sum = 0;
         while(in_file >> line) {
-            unsigned long long current_joltage = get_joltage(line, 12);
-            joltage_sum += current_joltage;
+            joltage_sum += get_joltage(line, 12);
         }
         std::cout << "Total joltage: " << joltage_sum << "\n";
     }
