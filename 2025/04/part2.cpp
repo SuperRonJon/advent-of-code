@@ -120,8 +120,7 @@ int main(int argc, char **argv) {
         Grid grid{in_file};
         std::size_t total_count{0};
                 
-        std::size_t current_count = grid.remove_accessible_rolls();
-        while(current_count > 0) {
+        for(std::size_t current_count = grid.remove_accessible_rolls(); current_count > 0; ) {
             total_count += current_count;
             current_count = grid.remove_accessible_rolls();
         }
