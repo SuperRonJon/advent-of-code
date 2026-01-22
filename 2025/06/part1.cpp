@@ -74,6 +74,6 @@ int main(int argc, char **argv) {
         }
     }
     std::uint64_t result = do_problems(numbers, operations);
-    std::cout << "Result sum: " << result << "\n";
+    std::cout << "Result: " << result << "\n";
     return 0;
 }
