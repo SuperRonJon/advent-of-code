@@ -18,22 +18,7 @@ public:
             m_numbers.push_back(std::stoul(curr_num));
         }
     }
-    void add_number(const std::uint32_t number) {
-        m_numbers.push_back(number);
-    }
-    void set_operation(char c) {
-        switch(c) {
-            case '+':
-                m_operation = ADD;
-                break;
-            case '*':
-                m_operation = MULTIPLY;
-                break;
-            default:
-                break;
-        }
-    }
-    std::uint64_t solve() {
+    std::uint64_t solve() const {
         if(m_numbers.empty()) {
             return 0ULL;
         }
@@ -56,17 +41,21 @@ private:
         ADD,
         MULTIPLY
     };
+    void set_operation(char c) {
+        switch(c) {
+            case '+':
+                m_operation = ADD;
+                break;
+            case '*':
+                m_operation = MULTIPLY;
+                break;
+            default:
+                break;
+        }
+    }
     std::vector<std::uint32_t> m_numbers;
     Operation m_operation;
 };
-
-void add_operations(std::vector<char> &operations, const std::string &line) {
-    for(std::size_t i = 0; i < line.size(); i++) {
-        if(line[i] != ' ') {
-            operations.push_back(line[i]);
-        }
-    }
-}
 
 std::vector<Problem> create_problems(const std::vector<std::string> &lines, const std::vector<char> &operations) {
     std::size_t problems_added{0};
@@ -74,8 +63,8 @@ std::vector<Problem> create_problems(const std::vector<std::string> &lines, cons
     std::vector<Problem> problems;
     for(std::size_t i = 0; i < lines[0].size(); i++) {
         bool is_problem_end = true;
-        for(std::size_t j = 0; j < lines.size(); j++) {
-            if(lines[j][i] != ' ') {
+        for(const std::string &line : lines) {
+            if(line[i] != ' ') {
                 is_problem_end = false;
                 break;
             }
@@ -104,7 +93,7 @@ int main(int argc, char **argv) {
     }
     std::vector<std::string> lines;
     std::vector<char> operations;
-    std::string filename{argv[1]};
+    const std::string filename{argv[1]};
     std::ifstream in_file{filename};
     std::string line;
     while(std::getline(in_file, line)) {
@@ -112,12 +101,16 @@ int main(int argc, char **argv) {
             lines.push_back(line);
         }
         else {
-            add_operations(operations, line);
+            for(const char c : line) {
+                if(c != ' ') {
+                    operations.push_back(c);
+                }
+            }
         }
     }
-    std::vector<Problem> problems = create_problems(lines, operations);
+    const std::vector<Problem> problems = create_problems(lines, operations);
     std::uint64_t total_result{0};
-    for(Problem problem : problems) {
+    for(const Problem &problem : problems) {
         total_result += problem.solve();
     }
     std::cout << "Result: " << total_result << "\n";
