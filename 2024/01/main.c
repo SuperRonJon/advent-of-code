@@ -76,6 +76,28 @@ int get_total_distance(const int *l1, const int *l2, const size_t len)
 	return total;
 }
 
+int occurrences_in_list(const int *list, const size_t len, const int value)
+{
+	int count = 0;
+	for (size_t i = 0; i < len; i++)
+	{
+		if (list[i] == value)
+			count++;
+	}
+	return count;
+}
+
+int get_total_similarity(const int *l1, const int *l2, const size_t len)
+{
+	int total = 0;
+	for (size_t i = 0; i < len; i++)
+	{
+		const int occurances = occurrences_in_list(l2, len, l1[i]);
+		total += l1[i] * occurances;
+	}
+	return total;
+}
+
 int main(int argc, char **argv)
 {
 	if (argc != 2)
@@ -100,7 +122,9 @@ int main(int argc, char **argv)
 	qsort(list1, line_count, sizeof(int), cmp_ints);
 	qsort(list2, line_count, sizeof(int), cmp_ints);
 	int dist = get_total_distance(list1, list2, line_count);
-	printf("Total distance: %d\n", dist);
+	int similarity = get_total_similarity(list1, list2, line_count);
+	printf("Total distance (part1): %d\n", dist);
+	printf("Total similarity (part2): %d\n", similarity);
 	free(list1);
 	free(list2);
 	return 0;
