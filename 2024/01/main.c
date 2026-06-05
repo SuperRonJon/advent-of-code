@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LINESIZE 128
+#ifndef LINESIZE
+    #define LINESIZE 128
+#endif
 
 size_t count_lines(FILE *f)
 {
