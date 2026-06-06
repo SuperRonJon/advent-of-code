@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LINESIZE 64
+#ifndef LINESIZE
+    #define LINESIZE 64
+#endif
 
-size_t get_number_count(char *report_string)
+size_t get_number_count(const char *const report_string)
 {
     size_t cnt = 0;
     size_t len = strlen(report_string);
@@ -17,7 +19,7 @@ size_t get_number_count(char *report_string)
     return cnt;
 }
 
-void fill_report(int *report, char *report_string)
+void fill_report(int *report, const char *const report_string)
 {
     size_t len = strlen(report_string);
     size_t rep_itr = 0;
@@ -39,7 +41,7 @@ void fill_report(int *report, char *report_string)
     }
 }
 
-bool report_is_safe(int *report, size_t len)
+bool report_is_safe(const int *const report, const size_t len)
 {
     // 1 is increasing -1 is decreasing
     const int direction = report[1] > report[0] ? 1 : -1;
@@ -56,6 +58,44 @@ bool report_is_safe(int *report, size_t len)
             return false;
     }
     return true;
+}
+
+// returns whether the array is safe without index exclude
+bool is_safe_without(const int *const report, const size_t len, const size_t exclude)
+{
+    size_t new_len = len - 1;
+    int *new_report = malloc(new_len * sizeof(int));
+    
+    size_t j = 0;
+    for (size_t i = 0; i < new_len; i++)
+    {
+        if (i == exclude)
+        {
+            j++;
+        }
+        new_report[i] = report[j];
+        j++;
+    }
+    bool res = report_is_safe(new_report, new_len);
+    free(new_report);
+    return res;
+}
+
+// Returns true if the report is safe or
+// if it is safe with one number removed
+bool report_can_be_safe(const int *const report, const size_t len)
+{
+    if (!report_is_safe(report, len))
+    {
+        for (size_t i = 0; i < len; i++)
+        {
+            if (is_safe_without(report, len, i))
+                return true;
+        }
+        return false;
+    }
+    else
+        return true;
 }
 
 int main(int argc, char **argv)
@@ -75,14 +115,24 @@ int main(int argc, char **argv)
 
     char linebuff[LINESIZE];
     int safe_count = 0;
+    int dampened_count = 0;
     while(fgets(linebuff, LINESIZE, infile) != NULL)
     {
         size_t num_count = get_number_count(linebuff);
         int *report = malloc(num_count * sizeof(int));
         fill_report(report, linebuff);
         if (report_is_safe(report, num_count))
+        {
             safe_count++;
+            dampened_count++;
+        }
+        else if (report_can_be_safe(report, num_count))
+        {
+            dampened_count++;
+        }
+        free(report);
     }
     printf("Safe report count: %d\n", safe_count);
+    printf("Dampened safe report count: %d\n", dampened_count);
     return 0;
 }
