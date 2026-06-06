@@ -50,11 +50,11 @@ bool report_is_safe(const int *const report, const size_t len)
     {
         int curr = report[i];
         int prev = report[i - 1];
-        if (curr == prev)
-            return false;
-        if (direction == 1 && (curr < prev || curr > prev + 3))
-            return false;
-        if (direction == -1 && (curr > prev || curr < prev - 3))
+        if (
+            (curr == prev) ||
+            (direction == 1 && (curr < prev || curr > prev + 3)) ||
+            (direction == -1 && (curr > prev || curr < prev - 3))
+        )
             return false;
     }
     return true;
