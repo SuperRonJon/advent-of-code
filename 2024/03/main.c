@@ -57,7 +57,7 @@ struct command
 	size_t index;
 };
 
-struct command get_next_command(const char *const str, size_t start, bool enabled)
+struct command get_next_command(const char *const str, const size_t start, const bool enabled)
 {
 	struct command result;
 	size_t do_start = get_next_do_start(str, start);
@@ -88,7 +88,7 @@ struct command get_next_command(const char *const str, size_t start, bool enable
 	return result;
 }
 
-int get_line_sum(const char *const str, bool *enabled, bool can_disable)
+int get_line_sum(const char *const str, bool *const enabled, const bool can_disable)
 {
 	int sum = 0;
 	size_t len = strlen(str);
