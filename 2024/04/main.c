@@ -212,6 +212,7 @@ int main(int argc, char **argv)
         }
         row++;
     }
+    fclose(infile);
     free(linebuff);
     int xmas_count = count_xmas(grid, grid_len);
     int mas_x_count = count_mas_x(grid, grid_len);
