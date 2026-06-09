@@ -126,13 +126,11 @@ int count_mas_x(char **grid, const size_t len)
             )
                 continue;
             
-	    // Check which diagonals centering on the current cell match the target
             bool down_right = matches_direction(grid, len, row - 1, col - 1, RIGHT, DOWN, target);
             bool down_left = matches_direction(grid, len, row - 1, col + 1, LEFT, DOWN, target);
             bool up_right = matches_direction(grid, len, row + 1, col - 1, RIGHT, UP, target);
             bool up_left = matches_direction(grid, len, row + 1, col + 1, LEFT, UP, target);
 
-	    // Increment count if opposing diagonals are matches
             if (
                 (down_right && up_right) || 
                 (down_right && down_left) || 
