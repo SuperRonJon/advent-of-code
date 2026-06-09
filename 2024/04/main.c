@@ -62,7 +62,7 @@ bool matches_direction(
     }
 
     bool match = true;
-    for (int i = 0; i < target_len; i++)
+    for (int i = 0; i < (int)target_len; i++)
     {
         const size_t row_i = row + (i * row_mod);
         const size_t col_i = col + (i * col_mod);
@@ -75,16 +75,15 @@ bool matches_direction(
     return match;
 }
 
+// Part 1
 int count_xmas(char **grid, const size_t len)
 {
     int count = 0;
     static const char *target = "XMAS";
-    const size_t target_len = strlen(target);
-    size_t target_itr = 0;
 
     for (size_t row = 0; row < len; row++)
     {
-        for (size_t col = 0; col< len; col++)
+        for (size_t col = 0; col < len; col++)
         {
             if (grid[row][col] != 'X')
                 continue;
@@ -103,6 +102,43 @@ int count_xmas(char **grid, const size_t len)
             if (matches_direction(grid, len, row, col, LEFT, UP, target))
                 count++;
             if (matches_direction(grid, len, row, col, LEFT, DOWN, target))
+                count++;
+        }
+    }
+    return count;
+}
+
+// Part 2
+int count_mas_x(char **grid, const size_t len)
+{
+    int count = 0;
+    static const char *target = "MAS";
+    const size_t half_len = (size_t) strlen(target) / 2;
+
+    for (size_t row = 0; row < len; row++)
+    {
+        for (size_t col = 0; col < len; col++)
+        {
+            if (
+                (grid[row][col] != 'A') ||
+                (row < half_len || row > (len - 1 - half_len)) ||
+                (col < half_len || col > (len - 1 - half_len))
+            )
+                continue;
+            
+	    // Check which diagonals centering on the current cell match the target
+            bool down_right = matches_direction(grid, len, row - 1, col - 1, RIGHT, DOWN, target);
+            bool down_left = matches_direction(grid, len, row - 1, col + 1, LEFT, DOWN, target);
+            bool up_right = matches_direction(grid, len, row + 1, col - 1, RIGHT, UP, target);
+            bool up_left = matches_direction(grid, len, row + 1, col + 1, LEFT, UP, target);
+
+	    // Increment count if opposing diagonals are matches
+            if (
+                (down_right && up_right) || 
+                (down_right && down_left) || 
+                (up_left && up_right) || 
+                (up_left && down_left)
+            )
                 count++;
         }
     }
@@ -180,7 +216,9 @@ int main(int argc, char **argv)
     }
     free(linebuff);
     int xmas_count = count_xmas(grid, grid_len);
+    int mas_x_count = count_mas_x(grid, grid_len);
     free_grid(grid, grid_len);
-    printf("XMAS count: %d\n", xmas_count);
+    printf("XMAS count (Part 1): %d\n", xmas_count);
+    printf("MAS-X count (Part 2): %d\n", mas_x_count);
     return 0;
 }
