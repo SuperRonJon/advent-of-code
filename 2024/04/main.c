@@ -42,6 +42,8 @@ bool matches_direction(
             if (row > len - target_len)
                 return false;
             break;
+	default:
+	    break;
     }
     switch (h_dir)
     {
@@ -55,6 +57,8 @@ bool matches_direction(
             if (col > len - target_len)
                 return false;
             break;
+	default:
+	    break;
     }
 
     bool match = true;
@@ -162,10 +166,11 @@ int main(int argc, char **argv)
     }
 
     const size_t grid_len = get_grid_size(infile);
+    const size_t linesize = grid_len + 2;
     char **grid = create_grid(grid_len);
-    char *linebuff = malloc((grid_len + 1) * sizeof(char));
+    char *linebuff = malloc((linesize) * sizeof(char));
     size_t row = 0;
-    while (fgets(linebuff, LINESIZE, infile) != NULL)
+    while (fgets(linebuff, linesize, infile) != NULL)
     {
         for (size_t i = 0; i < grid_len; i++)
         {
